@@ -1,0 +1,32 @@
+# Project exclude paths
+/project/project/target/
+/project/target/
+/target/
+/target/scala-2.13/classes/
+
+# Scala stuff
+*.class
+**/target/
+
+# IDE
+/.idea
+*.iml
+/.metals
+/wal
+/data
+/meta
+*.swp
+
+# MacOS
+.DS_Store
+
+**/ga-credentials.json
+
+secrets.env
+
+# Metals
+
+.bloop/
+project/metals.sbt
+
+.bsp
