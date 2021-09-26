@@ -6,4 +6,8 @@ object Errors {
     override def getMessage: String = message
   }
 
+  final case class CoinApiClientError(message: String) extends Throwable {
+    override def getMessage: String = message
+  }
+
 }

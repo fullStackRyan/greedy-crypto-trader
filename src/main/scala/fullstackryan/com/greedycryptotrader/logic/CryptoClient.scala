@@ -4,8 +4,8 @@ import cats.effect.Resource
 import cats.effect.kernel.{Async, Concurrent}
 import cats.syntax.all._
 import fullstackryan.com.greedycryptotrader.config.Config
-import fullstackryan.com.greedycryptotrader.model.CryptoData
 import fullstackryan.com.greedycryptotrader.model.Errors.AlternativeClientError
+import fullstackryan.com.greedycryptotrader.model.GreedIndex
 import io.circe.Json
 import org.http4s._
 import org.http4s.blaze.client.BlazeClientBuilder
@@ -14,7 +14,7 @@ import org.http4s.circe.jsonDecoder
 import org.http4s.client.Client
 
 trait CryptoClient[F[_]] {
-  def get: F[CryptoData]
+  def get(limit: Int): F[GreedIndex]
 }
 
 object CryptoClient {
@@ -31,24 +31,23 @@ object CryptoClient {
     def adaptUnknownErrors(e: Throwable): Throwable =
       e match {
         case e: AlternativeClientError => e
-        case e                         => toContentfulClientError(e)
+        case e                         => toAlternativeApiClientError(e)
       }
 
-    def toContentfulClientError(e: Throwable): Throwable = AlternativeClientError(e.getMessage)
+    def toAlternativeApiClientError(e: Throwable): Throwable = AlternativeClientError(e.getMessage)
 
-    override def get: F[CryptoData] =
+    override def get(limit: Int): F[GreedIndex] =
       client
-        .expectOr[CryptoData](
+        .expectOr[GreedIndex](
           Request[F](
             Method.GET,
-            config.alternative.base
+            config.alternative.base.withQueryParam("limit", limit)
           )
         ) { response =>
           maybeErrorBody(response)
             .map(json => AlternativeClientError(s"Unexpected status: ${response.status}: Error Body: $json"))
         }
         .adaptError(adaptUnknownErrors(_))
-
   }
 
 }

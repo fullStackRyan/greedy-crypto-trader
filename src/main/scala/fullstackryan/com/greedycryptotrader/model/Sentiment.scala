@@ -3,11 +3,11 @@ package fullstackryan.com.greedycryptotrader.model
 import io.circe.{Decoder, Encoder}
 
 sealed abstract case class Sentiment(asString: String)
-object ExtremeGreed extends Sentiment("ExtremeGreed")
+object ExtremeGreed extends Sentiment("Extreme Greed")
 object Greed        extends Sentiment("Greed")
 object Neutral      extends Sentiment("Neutral")
 object Fear         extends Sentiment("Fear")
-object ExtremeFear  extends Sentiment("ExtremeFear")
+object ExtremeFear  extends Sentiment("Extreme Fear")
 
 object Sentiment {
   implicit val encoder: Encoder[Sentiment] = Encoder.encodeString.contramap[Sentiment] {
